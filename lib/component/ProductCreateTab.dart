@@ -8,15 +8,14 @@ import 'imageprovider.dart';
 import 'mapprovider.dart';
 
 class ProductCreateTab extends StatefulWidget {
-  String title;
-  String description;
-  double price;
-
   @override
   _ProductCreateTabState createState() => _ProductCreateTabState();
 }
 
 class _ProductCreateTabState extends State<ProductCreateTab> {
+  String title;
+  String description;
+  double price;
   String image = 'assets/4.png';
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
   @override
@@ -35,7 +34,6 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
                 children: <Widget>[
                   TextFormField(
                     decoration: InputDecoration(labelText: 'title'),
-                    textDirection: TextDirection.rtl,
                     validator: (value) {
                       if (value.isEmpty) {
                         return 'Title is required';
@@ -43,7 +41,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
                       return null;
                     },
                     onSaved: (value) {
-                      widget.title = value;
+                      title = value;
                     },
                   ),
                   TextFormField(
@@ -56,7 +54,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
                       return null;
                     },
                     onSaved: (value) {
-                      widget.description = value;
+                      description = value;
                     },
                   ),
                   TextFormField(
@@ -72,7 +70,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
                       return null;
                     },
                     onSaved: (value) {
-                      widget.price = double.parse(value);
+                      price = double.parse(value);
                     },
                   ),
                   MapProvider(),
@@ -84,9 +82,9 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
                         ScopedModel.of<ProductModel>(context,
                                 rebuildOnChange: true)
                             .addProduct(Product(
-                                title: widget.title,
-                                description: widget.description,
-                                price: widget.price,
+                                title: title,
+                                description: description,
+                                price: price,
                                 image: image));
                         Navigator.pushNamed(context, ProductManager.id);
                       }

@@ -3,6 +3,7 @@ import 'package:flutterapp/widgets/Login/AcceptTerms.dart';
 import 'package:flutterapp/widgets/Login/Email.dart';
 import 'package:flutterapp/widgets/Login/LoginButton.dart';
 import 'package:flutterapp/widgets/Login/Password.dart';
+import 'package:flutterapp/widgets/Login/oauth_changer.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../Models/OAuthModel.dart';
@@ -21,18 +22,19 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<OAuthModel>(
-      model: OAuthModel(),
-      child: Scaffold(
-        appBar: AppBar(title: Text('User LogIN')),
-        body: Container(
-          decoration: loginDecration,
-          child: Center(
-            child: Container(
-              width: varibleWidth(context),
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.all(15),
+    return Scaffold(
+      key: ScopedModel.of<OAuthModel>(context).scaffoldKey,
+      appBar: AppBar(title: Text('User LogIN')),
+      body: Container(
+        decoration: loginDecration,
+        child: Center(
+          child: Container(
+            width: varibleWidth(context),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(15),
+                child: Form(
+                  key: ScopedModel.of<OAuthModel>(context).formKey,
                   child: Column(
                     children: <Widget>[
                       Email(),
@@ -42,6 +44,7 @@ class _LoginState extends State<Login> {
                       PasswordField(),
                       AcceptTerms(),
                       LoginButton(),
+                      OAuthChanger(),
                     ],
                   ),
                 ),

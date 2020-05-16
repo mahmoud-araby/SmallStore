@@ -6,15 +6,19 @@ class PasswordField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-        keyboardType: TextInputType.emailAddress,
-        decoration: InputDecoration(
-          labelText: 'PassWord',
-          filled: true,
-          fillColor: Colors.white,
-        ),
-        obscureText: true,
-        onChanged: (value) {
-          ScopedModel.of<OAuthModel>(context).user.password = value;
-        });
+      keyboardType: TextInputType.emailAddress,
+      decoration: InputDecoration(
+        labelText: 'PassWord',
+        filled: true,
+        fillColor: Colors.white,
+      ),
+      obscureText: true,
+      onSaved: (value) {
+        ScopedModel.of<OAuthModel>(context, rebuildOnChange: false)
+            .user
+            .password = value;
+      },
+      validator: ScopedModel.of<OAuthModel>(context).passwordValidator,
+    );
   }
 }

@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:flutterapp/Models/securedToken.dart';
 import 'package:http/http.dart' as http;
 import 'package:scoped_model/scoped_model.dart';
 
+import '../config.dart';
 import 'Product.dart';
 
 class ProductModel extends Model {
@@ -36,7 +38,7 @@ class ProductModel extends Model {
     isloading = true;
     notifyListeners();
     await http.delete(
-      'https://flutterstore-c3a00.firebaseio.com/products/${_products[index].id}.json',
+      '$ProductsLink/${_products[index].id}${securedToken.getToken()}}',
     );
     _products.removeAt(index);
     isloading = false;
@@ -71,10 +73,9 @@ class ProductModel extends Model {
       'description': newproduct.description,
       'image': newproduct.image
     };
-    final onlinedata = json.encode(data);
-    http.Response response = await http.post(
-        'https://flutterstore-c3a00.firebaseio.com/products.json',
-        body: onlinedata);
+    final onlineData = json.encode(data);
+    http.Response response = await http
+        .post('$ProductsLink${securedToken.getToken()}', body: onlineData);
     final String id = jsonDecode(response.body)['name'];
     newproduct.id = id;
     print(newproduct);
@@ -84,37 +85,38 @@ class ProductModel extends Model {
   }
 
   /////////////////////////////
-  voidUpdateProduct(Product newproduct, int index) async {
+  voidUpdateProduct(Product newProduct, int index) async {
     isloading = true;
     notifyListeners();
-    print(newproduct);
+    print(newProduct);
     final Map<String, dynamic> data = {
-      'title': newproduct.title,
-      'price': newproduct.price,
-      'description': newproduct.description,
-      'image': newproduct.image
+      'title': newProduct.title,
+      'price': newProduct.price,
+      'description': newProduct.description,
+      'image': newProduct.image
     };
-    final onlinedata = json.encode(data);
+    final onlineData = json.encode(data);
     await http.put(
-        'https://flutterstore-c3a00.firebaseio.com/products/${_products[index].id}.json',
-        body: onlinedata);
-    newproduct.id = _products[index].id;
-    print(newproduct);
-    _products.insert(index, newproduct);
+        '$ProductsLink/${_products[index].id}${securedToken.getToken()}',
+        body: onlineData);
+    newProduct.id = _products[index].id;
+    print(newProduct);
+    _products.insert(index, newProduct);
     isloading = false;
     notifyListeners();
   }
 
 //////////////////////////////////////////////////////////////
   Future<void> fetchProducts() async {
-    List<Product> fetchedproducts = [];
+    List<Product> fetchedProducts = [];
     isloading = true;
     notifyListeners();
-    http.Response response = await http
-        .get('https://flutterstore-c3a00.firebaseio.com/products.json');
-    final Map<String, dynamic> onlineproducts = jsonDecode(response.body);
-    if (onlineproducts != null) {
-      onlineproducts.forEach((String productid, dynamic products) {
+    http.Response response =
+        await http.get('$ProductsLink${securedToken.getToken()}');
+    final Map<String, dynamic> onlineProducts = jsonDecode(response.body);
+    print(onlineProducts);
+    if (onlineProducts != null && !onlineProducts.containsKey("error")) {
+      onlineProducts.forEach((String productid, dynamic products) {
         Product fetchedProduct = Product(
             title: products['title'],
             description: products['description'],
@@ -122,10 +124,10 @@ class ProductModel extends Model {
             location: products['location'],
             price: products['price'],
             id: productid);
-        fetchedproducts.add(fetchedProduct);
+        fetchedProducts.add(fetchedProduct);
       });
     }
-    _products = fetchedproducts;
+    _products = fetchedProducts;
     isloading = false;
     notifyListeners();
   }
