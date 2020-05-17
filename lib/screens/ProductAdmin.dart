@@ -3,8 +3,8 @@ import 'package:flutterapp/Models/ProductController.dart';
 import 'package:flutterapp/widgets/SideDrawer.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import '../component/ProductCreateTab.dart';
-import '../component/ProductListTab.dart';
+import 'ProductCreateTab.dart';
+import 'ProductListTab.dart';
 
 class ProductAdmin extends StatefulWidget {
   static String id = '/admin';

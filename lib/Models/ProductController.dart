@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutterapp/Models/securedToken.dart';
 import 'package:http/http.dart' as http;
 import 'package:scoped_model/scoped_model.dart';
 
@@ -38,7 +37,7 @@ class ProductModel extends Model {
     isloading = true;
     notifyListeners();
     await http.delete(
-      '$ProductsLink/${_products[index].id}${securedToken.getToken()}}',
+      '$ProductsLink/${_products[index].id}${getToken()}}',
     );
     _products.removeAt(index);
     isloading = false;
@@ -74,8 +73,8 @@ class ProductModel extends Model {
       'image': newproduct.image
     };
     final onlineData = json.encode(data);
-    http.Response response = await http
-        .post('$ProductsLink${securedToken.getToken()}', body: onlineData);
+    http.Response response =
+        await http.post('$ProductsLink${getToken()}', body: onlineData);
     final String id = jsonDecode(response.body)['name'];
     newproduct.id = id;
     print(newproduct);
@@ -96,8 +95,7 @@ class ProductModel extends Model {
       'image': newProduct.image
     };
     final onlineData = json.encode(data);
-    await http.put(
-        '$ProductsLink/${_products[index].id}${securedToken.getToken()}',
+    await http.put('$ProductsLink/${_products[index].id}${getToken()}',
         body: onlineData);
     newProduct.id = _products[index].id;
     print(newProduct);
@@ -111,8 +109,7 @@ class ProductModel extends Model {
     List<Product> fetchedProducts = [];
     isloading = true;
     notifyListeners();
-    http.Response response =
-        await http.get('$ProductsLink${securedToken.getToken()}');
+    http.Response response = await http.get('$ProductsLink${getToken()}');
     final Map<String, dynamic> onlineProducts = jsonDecode(response.body);
     print(onlineProducts);
     if (onlineProducts != null && !onlineProducts.containsKey("error")) {
@@ -131,4 +128,6 @@ class ProductModel extends Model {
     isloading = false;
     notifyListeners();
   }
+
+  getToken() {}
 }

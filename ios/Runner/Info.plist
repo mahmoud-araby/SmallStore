@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+<!-- for iOS 11 + -->
+
+  <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+  <string>Get the current user location</string>
+  <key>NSLocationAlwaysUsageDescription</key>
+  <string>Get the current user location</string>
+
+
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Using location to display on a map</string>
 	<key>CFBundleDevelopmentRegion</key>

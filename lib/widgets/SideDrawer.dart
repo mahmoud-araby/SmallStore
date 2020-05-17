@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutterapp/Models/OAuthModel.dart';
+import 'package:flutterapp/screens/Loginscreen.dart';
 import 'package:flutterapp/screens/ProductAdmin.dart';
 import 'package:flutterapp/screens/ProductManager.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class SideDrawer extends StatefulWidget {
   @override
@@ -29,6 +32,15 @@ class _SideDrawerState extends State<SideDrawer> {
             leading: Icon(Icons.map),
             onTap: () {
               Navigator.pushNamed(context, ProductManager.id);
+            },
+          ),
+          Divider(),
+          ListTile(
+            title: Text('Logout'),
+            leading: Icon(Icons.exit_to_app),
+            onTap: () {
+              ScopedModel.of<OAuthModel>(context).logout();
+              Navigator.pushReplacementNamed(context, Login.id);
             },
           ),
         ],

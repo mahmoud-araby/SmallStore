@@ -18,7 +18,7 @@ class LoginButton extends StatelessWidget {
             color: Theme.of(context).accentColor,
             onPressed: () {
               ScopedModel.of<OAuthModel>(context)
-                  .oAuthenticate()
+                  .oAuthenticate(context)
                   .then((Map<String, dynamic> value) {
                 if (value['success'] == true) {
                   Navigator.pushReplacementNamed(context, ProductManager.id);

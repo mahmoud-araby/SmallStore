@@ -10,7 +10,7 @@ import '../Models/OAuthModel.dart';
 import '../constant.dart';
 
 class Login extends StatefulWidget {
-  static String id = '/';
+  static String id = '/id';
   @override
   _LoginState createState() => _LoginState();
 }

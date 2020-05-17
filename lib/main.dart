@@ -4,6 +4,7 @@ import 'package:flutterapp/screens/Loginscreen.dart';
 import 'package:flutterapp/screens/ProductAdmin.dart';
 import 'package:flutterapp/screens/ProductManager.dart';
 import 'package:flutterapp/screens/ProductVisualizer.dart';
+import 'package:flutterapp/screens/StartScreen.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import 'Models/ProductController.dart';
@@ -26,9 +27,15 @@ class MyApp extends StatelessWidget {
             brightness: Brightness.light,
             primarySwatch: Colors.deepOrange,
           ),
-          initialRoute: Login.id,
+          initialRoute: StartScreen.id,
           routes: {
+//            '/': (BuildContext context) => ScopedModelDescendant<OAuthModel>(
+//                    builder:
+//                        (BuildContext context, Widget child, OAuthModel model) {
+//                  return model.isUserLogged ? ProductManager() : Login();
+//                }),
             Login.id: (BuildContext context) => Login(),
+            StartScreen.id: (BuildContext context) => StartScreen(),
             ProductManager.id: (BuildContext context) => ProductManager(),
             ProductAdmin.id: (BuildContext context) => ProductAdmin(),
           },

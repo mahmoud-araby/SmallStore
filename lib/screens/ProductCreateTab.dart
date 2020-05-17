@@ -4,8 +4,8 @@ import 'package:flutterapp/Models/ProductController.dart';
 import 'package:flutterapp/screens/ProductManager.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import 'imageprovider.dart';
-import 'mapprovider.dart';
+import '../component/imageprovider.dart';
+import '../component/mapprovider.dart';
 
 class ProductCreateTab extends StatefulWidget {
   @override
