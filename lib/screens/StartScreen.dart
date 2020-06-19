@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapp/Models/OAuthModel.dart';
+import 'package:flutterapp/Models/ProductController.dart';
 import 'package:flutterapp/screens/Loginscreen.dart';
-import 'package:flutterapp/screens/ProductManager.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class StartScreen extends StatefulWidget {
@@ -32,8 +31,8 @@ class _StartScreenState extends State<StartScreen> {
 
   goto() async {
     await Future.delayed(Duration(seconds: 2));
-    ScopedModel.of<OAuthModel>(context, rebuildOnChange: true).isUserLogged
-        ? Navigator.pushReplacementNamed(context, ProductManager.id)
+    ScopedModel.of<ProductModel>(context, rebuildOnChange: true).isUserLogged
+        ? Navigator.pushReplacementNamed(context, Login.id)
         : Navigator.pushReplacementNamed(context, Login.id);
   }
 }

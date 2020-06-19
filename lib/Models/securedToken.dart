@@ -18,6 +18,10 @@ class SecuredToken extends Model {
     return tokenSecure + _idToken;
   }
 
+  String getTokenName() {
+    return _idToken;
+  }
+
   _storeData() async {
     _sharedPreferences.setStringList("Token", [_idToken, _email]);
     print(_idToken);

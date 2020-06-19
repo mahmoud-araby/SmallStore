@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapp/Models/OAuthModel.dart';
+import 'package:flutterapp/Models/ProductController.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class PasswordField extends StatelessWidget {
@@ -14,11 +14,11 @@ class PasswordField extends StatelessWidget {
       ),
       obscureText: true,
       onSaved: (value) {
-        ScopedModel.of<OAuthModel>(context, rebuildOnChange: false)
+        ScopedModel.of<ProductModel>(context, rebuildOnChange: false)
             .user
             .password = value;
       },
-      validator: ScopedModel.of<OAuthModel>(context).passwordValidator,
+      validator: ScopedModel.of<ProductModel>(context).passwordValidator,
     );
   }
 }

@@ -1,14 +1,20 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutterapp/Models/google_drive.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:scoped_model/scoped_model.dart';
 
 import '../config.dart';
+import 'OAuthModel.dart';
 import 'Product.dart';
+import 'file_uploader.dart';
 
-class ProductModel extends Model {
+class ProductModel extends OAuthModel with GoogleDrive, FirebaseUploader {
+  File uploadedImage;
   bool isloading = false;
-  int currentProduct = 0;
+  int currentProductIndex = 0;
+  Product currentProduct = Product(image: 'assets/4.png');
   List<Product> _products = [
     Product(title: 'no.1', price: 20.0, image: 'assets/login.jpg'),
   ];
@@ -18,7 +24,7 @@ class ProductModel extends Model {
   }
 
   void goToProduct(int index) {
-    currentProduct = index;
+    currentProductIndex = index;
     notifyListeners();
   }
 
@@ -29,7 +35,7 @@ class ProductModel extends Model {
   }
 
   Product currentProductAquire() {
-    return _products[currentProduct];
+    return _products[currentProductIndex];
   }
 
   //////////////////////////
@@ -37,7 +43,7 @@ class ProductModel extends Model {
     isloading = true;
     notifyListeners();
     await http.delete(
-      '$ProductsLink/${_products[index].id}${getToken()}}',
+      '$ProductsLink/${_products[index].id}${getToken()}.json',
     );
     _products.removeAt(index);
     isloading = false;
@@ -45,7 +51,7 @@ class ProductModel extends Model {
   }
 
   void deleteCurrentProduct() {
-    _products.removeAt(currentProduct);
+    _products.removeAt(currentProductIndex);
     notifyListeners();
   }
 /////////////////////////////////////////////
@@ -56,35 +62,43 @@ class ProductModel extends Model {
   }
 
   toggleCurrentFavorate() {
-    _products[currentProduct].favoraite =
-        _products[currentProduct].favoraite ? false : true;
+    _products[currentProductIndex].favoraite =
+        _products[currentProductIndex].favoraite ? false : true;
     notifyListeners();
   }
 
   /////////////////////////////
-  void addProduct(Product newproduct) async {
+  Future<void> addProduct(Product newProduct) async {
     isloading = true;
     notifyListeners();
-    print(newproduct);
+
+    await uploadImage(uploadedImage);
+
+    print(newProduct);
     final Map<String, dynamic> data = {
-      'title': newproduct.title,
-      'price': newproduct.price,
-      'description': newproduct.description,
-      'image': newproduct.image
+      'title': newProduct.title,
+      'price': newProduct.price,
+      'description': newProduct.description,
+      'imagePath': 0,
+      'image': 'assets/4.png',
+      'imageUrl': 0,
+      'address': newProduct.address,
+      'loc_lat': newProduct.location.latitude,
+      'loc_long': newProduct.location.longitude,
     };
     final onlineData = json.encode(data);
     http.Response response =
-        await http.post('$ProductsLink${getToken()}', body: onlineData);
+        await http.post('$ProductsLink${getToken()}.json', body: onlineData);
     final String id = jsonDecode(response.body)['name'];
-    newproduct.id = id;
-    print(newproduct);
-    _products.add(newproduct);
+    newProduct.id = id;
+    print(newProduct);
+    _products.add(newProduct);
     isloading = false;
     notifyListeners();
   }
 
   /////////////////////////////
-  voidUpdateProduct(Product newProduct, int index) async {
+  Future<void> updateProduct(Product newProduct, int index) async {
     isloading = true;
     notifyListeners();
     print(newProduct);
@@ -92,10 +106,13 @@ class ProductModel extends Model {
       'title': newProduct.title,
       'price': newProduct.price,
       'description': newProduct.description,
-      'image': newProduct.image
+      'image': newProduct.image,
+      'address': newProduct.address,
+      'loc_lat': newProduct.location.latitude,
+      'loc_long': newProduct.location.longitude,
     };
     final onlineData = json.encode(data);
-    await http.put('$ProductsLink/${_products[index].id}${getToken()}',
+    await http.put('$ProductsLink/${_products[index].id}${getToken()}.json',
         body: onlineData);
     newProduct.id = _products[index].id;
     print(newProduct);
@@ -109,16 +126,20 @@ class ProductModel extends Model {
     List<Product> fetchedProducts = [];
     isloading = true;
     notifyListeners();
-    http.Response response = await http.get('$ProductsLink${getToken()}');
+    http.Response response = await http.get('$ProductsLink${getToken()}.json');
+    print(response.body);
     final Map<String, dynamic> onlineProducts = jsonDecode(response.body);
     print(onlineProducts);
     if (onlineProducts != null && !onlineProducts.containsKey("error")) {
       onlineProducts.forEach((String productid, dynamic products) {
+        Position position = Position(
+            latitude: products['loc_lat'], longitude: products['loc_long']);
         Product fetchedProduct = Product(
             title: products['title'],
             description: products['description'],
             image: products['image'],
-            location: products['location'],
+            location: position,
+            address: products['address'],
             price: products['price'],
             id: productid);
         fetchedProducts.add(fetchedProduct);
@@ -129,5 +150,50 @@ class ProductModel extends Model {
     notifyListeners();
   }
 
-  getToken() {}
+  getToken() {
+    return '';
+  }
+
+  setImage(File image) {
+    uploadedImage = image;
+    notifyListeners();
+  }
+
+//  Future<Map<String, dynamic>> uploadImage(File image,
+//      {String imagePath}) async {
+//    final mimeTypeData = lookupMimeType(image.path).split('/');
+//    final imageUploadRequest = http.MultipartRequest(
+//        'POST',
+//        Uri.parse(
+//            'https://us-central1-flutterstore-c3a00.cloudfunctions.net/storeImage'));
+//    final file = await http.MultipartFile.fromPath(
+//      'image',
+//      image.path,
+//      contentType: MediaType(
+//        mimeTypeData[0],
+//        mimeTypeData[1],
+//      ),
+//    );
+//    imageUploadRequest.files.add(file);
+//    if (imagePath != null) {
+//      imageUploadRequest.fields['imagePath'] = Uri.encodeComponent(imagePath);
+//    }
+//    imageUploadRequest.headers['Authorization'] = 'Bearer $getTokenName';
+//
+//    try {
+//      final streamedResponse = await imageUploadRequest.send();
+//      final response = await http.Response.fromStream(streamedResponse);
+//      if (response.statusCode != 200 && response.statusCode != 201) {
+//        print('Something went wrong');
+//        print((response.statusCode));
+//        print(json.decode(response.body));
+//        return null;
+//      }
+//      final responseData = json.decode(response.body);
+//      return responseData;
+//    } catch (error) {
+//      print(error);
+//      return null;
+//    }
+//  }
 }

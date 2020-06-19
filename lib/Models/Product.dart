@@ -1,4 +1,4 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 
 class Product {
   Product(
@@ -7,12 +7,14 @@ class Product {
       this.price,
       this.description,
       this.location,
+      this.address,
       this.id});
   dynamic id;
   double price;
   String title;
   String description;
-  LatLng location;
+  Position location;
+  String address;
   String image;
   bool favoraite = false;
 }

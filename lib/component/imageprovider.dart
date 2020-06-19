@@ -1,8 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterapp/Models/ProductController.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class ImageGetter extends StatefulWidget {
   @override
@@ -10,30 +10,28 @@ class ImageGetter extends StatefulWidget {
 }
 
 class _ImageGetterState extends State<ImageGetter> {
-  File _image;
-
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _image = image;
-    });
+    ScopedModel.of<ProductModel>(context).setImage(image);
     Navigator.pop(context);
   }
 
   Future photoImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    ScopedModel.of<ProductModel>(context).setImage(image);
 
-    setState(() {
-      _image = image;
-    });
     Navigator.pop(context);
   }
 
   Widget imageview() {
-    if (_image == null) {
+    if (ScopedModel.of<ProductModel>(context, rebuildOnChange: true)
+            .uploadedImage ==
+        null) {
       return Container();
     } else {
-      return Image.file(_image);
+      return Image.file(
+          ScopedModel.of<ProductModel>(context, rebuildOnChange: true)
+              .uploadedImage);
     }
   }
 

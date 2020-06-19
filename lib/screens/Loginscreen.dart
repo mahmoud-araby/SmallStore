@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterapp/Models/ProductController.dart';
 import 'package:flutterapp/widgets/Login/AcceptTerms.dart';
 import 'package:flutterapp/widgets/Login/Email.dart';
 import 'package:flutterapp/widgets/Login/LoginButton.dart';
@@ -6,7 +7,6 @@ import 'package:flutterapp/widgets/Login/Password.dart';
 import 'package:flutterapp/widgets/Login/oauth_changer.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import '../Models/OAuthModel.dart';
 import '../constant.dart';
 
 class Login extends StatefulWidget {
@@ -23,7 +23,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: ScopedModel.of<OAuthModel>(context).scaffoldKey,
+      key: ScopedModel.of<ProductModel>(context).scaffoldKey,
       appBar: AppBar(title: Text('User LogIN')),
       body: Container(
         decoration: loginDecration,
@@ -34,7 +34,7 @@ class _LoginState extends State<Login> {
               child: Padding(
                 padding: EdgeInsets.all(15),
                 child: Form(
-                  key: ScopedModel.of<OAuthModel>(context).formKey,
+                  key: ScopedModel.of<ProductModel>(context).formKey,
                   child: Column(
                     children: <Widget>[
                       Email(),

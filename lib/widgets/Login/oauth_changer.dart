@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterapp/Models/OAuthModel.dart';
+import 'package:flutterapp/Models/ProductController.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class OAuthChanger extends StatelessWidget {
@@ -7,7 +8,7 @@ class OAuthChanger extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text.rich(TextSpan(children: <InlineSpan>[
       TextSpan(
-          text: (ScopedModel.of<OAuthModel>(context, rebuildOnChange: true)
+          text: (ScopedModel.of<ProductModel>(context, rebuildOnChange: true)
                           .oAuthType ==
                       OAuthType.login
                   ? 'New User'
@@ -15,10 +16,10 @@ class OAuthChanger extends StatelessWidget {
               " ? "),
       WidgetSpan(
           child: InkWell(
-        onTap: ScopedModel.of<OAuthModel>(context, rebuildOnChange: true)
+        onTap: ScopedModel.of<ProductModel>(context, rebuildOnChange: true)
             .changeOAuthType,
         child: Text(
-          ScopedModel.of<OAuthModel>(context, rebuildOnChange: true)
+          ScopedModel.of<ProductModel>(context, rebuildOnChange: true)
                       .oAuthType ==
                   OAuthType.login
               ? 'Register'

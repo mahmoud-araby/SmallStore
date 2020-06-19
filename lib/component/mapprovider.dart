@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutterapp/Models/ProductController.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class MapProvider extends StatefulWidget {
   @override
@@ -28,7 +30,7 @@ class _MapProviderState extends State<MapProvider> {
       setState(() {
         map = true;
       });
-      Future.delayed(Duration(seconds: 3)).then((_) => locationGetter());
+      Future.delayed(Duration(seconds: 3)).then((_) => locationGetter(context));
     });
 
     super.initState();
@@ -45,10 +47,10 @@ class _MapProviderState extends State<MapProvider> {
             labelText: 'Address',
             suffixIcon: InkWell(
               child: Icon(Icons.location_searching),
-              onTap: locationGetter,
+              onTap: () => locationGetter(context),
             ),
           ),
-          onFieldSubmitted: locationFromCity,
+          onFieldSubmitted: (data) => locationFromCity(data, context),
         ),
         Container(
           height: 200,
@@ -71,19 +73,21 @@ class _MapProviderState extends State<MapProvider> {
     );
   }
 
-  locationGetter() async {
+  locationGetter(BuildContext context) async {
     Position position = await Geolocator().getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
     print(position);
     List<Placemark> placeMark = await Geolocator()
         .placemarkFromCoordinates(position.latitude, position.longitude);
+    storeLocation(context, placeMark.first);
     showLocation(placeMark.first);
     animateLocation(placeMark.first.position);
   }
 
-  locationFromCity(String city) async {
+  locationFromCity(String city, BuildContext context) async {
     List<Placemark> placeMark = await Geolocator().placemarkFromAddress(city);
     print(placeMark.length);
+    storeLocation(context, placeMark.first);
     showLocation(placeMark.first);
     animateLocation(placeMark.first.position);
   }
@@ -108,5 +112,16 @@ class _MapProviderState extends State<MapProvider> {
         Marker(markerId: MarkerId('Your Location'), position: _location)
       };
     });
+  }
+
+  storeLocation(BuildContext context, Placemark placeMark) {
+    ScopedModel.of<ProductModel>(context).currentProduct.location =
+        placeMark.position;
+    ScopedModel.of<ProductModel>(context).currentProduct.address =
+        placeMark.name +
+            ' , ' +
+            placeMark.subAdministrativeArea +
+            ' , ' +
+            placeMark.isoCountryCode;
   }
 }

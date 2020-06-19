@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapp/Models/OAuthModel.dart';
+import 'package:flutterapp/Models/ProductController.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class Email extends StatelessWidget {
@@ -12,9 +12,9 @@ class Email extends StatelessWidget {
         labelText: 'UserName',
       ),
       onSaved: (value) {
-        ScopedModel.of<OAuthModel>(context).user.email = value;
+        ScopedModel.of<ProductModel>(context).user.email = value;
       },
-      validator: ScopedModel.of<OAuthModel>(context).emailValidator,
+      validator: ScopedModel.of<ProductModel>(context).emailValidator,
     );
   }
 }

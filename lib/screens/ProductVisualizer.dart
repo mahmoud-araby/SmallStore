@@ -63,6 +63,29 @@ class _ProductVisualizerState extends State<ProductVisualizer> {
               SizedBox(
                 height: 15,
               ),
+              Material(
+                elevation: 20,
+                borderRadius: BorderRadius.circular(15),
+                color: Theme.of(context).accentColor.withOpacity(0.9),
+                shadowColor: Theme.of(context).accentColor.withOpacity(0.8),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(widget.product.address ?? "Unknown address"),
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Material(
+                elevation: 20,
+                borderRadius: BorderRadius.circular(15),
+                color: Theme.of(context).accentColor.withOpacity(0.9),
+                shadowColor: Theme.of(context).accentColor.withOpacity(0.8),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(widget.product.description ?? "No description"),
+                ),
+              ),
               RaisedButton(
                 color: Theme.of(context).accentColor,
                 onPressed: () {
